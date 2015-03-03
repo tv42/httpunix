@@ -33,6 +33,8 @@ func (u *HTTPUnixTransport) RegisterLocation(loc string, path string) {
 	u.loc[loc] = path
 }
 
+var _ http.RoundTripper = (*HTTPUnixTransport)(nil)
+
 func (t *HTTPUnixTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	if req.URL == nil {
 		return nil, errors.New("http+unix: nil Request.URL")
