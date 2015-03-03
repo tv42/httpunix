@@ -1,3 +1,17 @@
+// Package httpunix provides a HTTP transport (net/http.RoundTripper)
+// that uses Unix domain sockets instead of HTTP.
+//
+// This is useful for non-browser connections within the same host, as
+// it allows using the file system for credentials of both client
+// and server, and guaranteeing unique names.
+//
+// The URLs look like this:
+//
+//     http+unix://LOCATION/PATH_ETC
+//
+// where LOCATION is translated to a file system path with
+// Transport.RegisterLocation, and PATH_ETC follow normal http: scheme
+// conventions.
 package httpunix
 
 import (
@@ -9,8 +23,11 @@ import (
 	"time"
 )
 
+// Scheme is the URL scheme used for HTTP over UNIX domain sockets.
 const Scheme = "http+unix"
 
+// Transport is a http.RoundTripper that connects to Unix domain
+// sockets.
 type Transport struct {
 	DialTimeout           time.Duration
 	RequestTimeout        time.Duration
@@ -21,6 +38,11 @@ type Transport struct {
 	loc map[string]string
 }
 
+// RegisterLocation registers an URL location and maps it to the given
+// file system path.
+//
+// Calling RegisterLocation twice for the same location is a
+// programmer error, and causes a panic.
 func (t *Transport) RegisterLocation(loc string, path string) {
 	t.mu.Lock()
 	defer t.mu.Unlock()
@@ -35,6 +57,8 @@ func (t *Transport) RegisterLocation(loc string, path string) {
 
 var _ http.RoundTripper = (*Transport)(nil)
 
+// RoundTrip executes a single HTTP transaction. See
+// net/http.RoundTripper.
 func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	if req.URL == nil {
 		return nil, errors.New("http+unix: nil Request.URL")
