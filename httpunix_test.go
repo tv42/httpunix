@@ -3,6 +3,7 @@ package httpunix_test
 import (
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"net/http/httputil"
 	"time"
@@ -10,7 +11,8 @@ import (
 	"github.com/tv42/httpunix"
 )
 
-func Example_standalone() {
+func Example_clientStandalone() {
+	// This example shows using a customized http.Client.
 	u := &httpunix.Transport{
 		DialTimeout:           100 * time.Millisecond,
 		RequestTimeout:        1 * time.Second,
@@ -34,7 +36,9 @@ func Example_standalone() {
 	resp.Body.Close()
 }
 
-func Example_integrated() {
+func Example_clientIntegrated() {
+	// This example shows handling all net/http requests for the
+	// http+unix URL scheme.
 	u := &httpunix.Transport{
 		DialTimeout:           100 * time.Millisecond,
 		RequestTimeout:        1 * time.Second,
@@ -59,4 +63,16 @@ func Example_integrated() {
 	}
 	fmt.Printf("%s", buf)
 	resp.Body.Close()
+}
+
+func Example_server() {
+	l, err := net.Listen("unix", "sock")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer l.Close()
+
+	if err := http.Serve(l, nil); err != nil {
+		log.Fatal(err)
+	}
 }
