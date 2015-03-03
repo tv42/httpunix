@@ -21,16 +21,16 @@ type HTTPUnixTransport struct {
 	loc map[string]string
 }
 
-func (u *HTTPUnixTransport) RegisterLocation(loc string, path string) {
-	u.mu.Lock()
-	defer u.mu.Unlock()
-	if u.loc == nil {
-		u.loc = make(map[string]string)
+func (t *HTTPUnixTransport) RegisterLocation(loc string, path string) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	if t.loc == nil {
+		t.loc = make(map[string]string)
 	}
-	if _, exists := u.loc[loc]; exists {
+	if _, exists := t.loc[loc]; exists {
 		panic("location " + loc + " already registered")
 	}
-	u.loc[loc] = path
+	t.loc[loc] = path
 }
 
 var _ http.RoundTripper = (*HTTPUnixTransport)(nil)
