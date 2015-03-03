@@ -11,7 +11,7 @@ import (
 
 const Scheme = "http+unix"
 
-type HTTPUnixTransport struct {
+type Transport struct {
 	DialTimeout           time.Duration
 	RequestTimeout        time.Duration
 	ResponseHeaderTimeout time.Duration
@@ -21,7 +21,7 @@ type HTTPUnixTransport struct {
 	loc map[string]string
 }
 
-func (t *HTTPUnixTransport) RegisterLocation(loc string, path string) {
+func (t *Transport) RegisterLocation(loc string, path string) {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 	if t.loc == nil {
@@ -33,9 +33,9 @@ func (t *HTTPUnixTransport) RegisterLocation(loc string, path string) {
 	t.loc[loc] = path
 }
 
-var _ http.RoundTripper = (*HTTPUnixTransport)(nil)
+var _ http.RoundTripper = (*Transport)(nil)
 
-func (t *HTTPUnixTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	if req.URL == nil {
 		return nil, errors.New("http+unix: nil Request.URL")
 	}

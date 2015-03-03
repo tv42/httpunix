@@ -11,7 +11,7 @@ import (
 )
 
 func Example_standalone() {
-	u := &httpunix.HTTPUnixTransport{
+	u := &httpunix.Transport{
 		DialTimeout:           100 * time.Millisecond,
 		RequestTimeout:        1 * time.Second,
 		ResponseHeaderTimeout: 1 * time.Second,
@@ -35,7 +35,7 @@ func Example_standalone() {
 }
 
 func Example_integrated() {
-	u := &httpunix.HTTPUnixTransport{
+	u := &httpunix.Transport{
 		DialTimeout:           100 * time.Millisecond,
 		RequestTimeout:        1 * time.Second,
 		ResponseHeaderTimeout: 1 * time.Second,
