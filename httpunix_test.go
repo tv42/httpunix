@@ -18,13 +18,13 @@ func Example_clientStandalone() {
 		RequestTimeout:        1 * time.Second,
 		ResponseHeaderTimeout: 1 * time.Second,
 	}
-	u.RegisterLocation("foo", "sock")
+	u.RegisterLocation("myservice", "/path/to/socket")
 
 	var client = http.Client{
 		Transport: u,
 	}
 
-	resp, err := client.Get("http+unix://foo/bar")
+	resp, err := client.Get("http+unix://myservice/urlpath/as/seen/by/server")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -44,7 +44,7 @@ func Example_clientIntegrated() {
 		RequestTimeout:        1 * time.Second,
 		ResponseHeaderTimeout: 1 * time.Second,
 	}
-	u.RegisterLocation("foo", "sock")
+	u.RegisterLocation("myservice", "/path/to/socket")
 
 	// If you want to use http: with the same client:
 	t := &http.Transport{}
@@ -53,7 +53,7 @@ func Example_clientIntegrated() {
 		Transport: t,
 	}
 
-	resp, err := client.Get("http+unix://foo/bar")
+	resp, err := client.Get("http+unix://myservice/urlpath/as/seen/by/server")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -66,7 +66,7 @@ func Example_clientIntegrated() {
 }
 
 func Example_server() {
-	l, err := net.Listen("unix", "sock")
+	l, err := net.Listen("unix", "/path/to/socket")
 	if err != nil {
 		log.Fatal(err)
 	}
